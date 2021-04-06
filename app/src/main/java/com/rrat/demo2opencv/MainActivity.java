@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -157,6 +158,18 @@ public class MainActivity extends AppCompatActivity {
     private void galleryAddPic() {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         File f = new File(currentPhotoPath);
+
+        if(f.exists()){
+            Bitmap bitmap = BitmapFactory.decodeFile(f.getAbsolutePath());
+            Log.i("MainActivity", "Width image: " + Integer.toString(bitmap.getWidth()));
+            Log.i("MainActivity", "Width image: " + Integer.toString(bitmap.getHeight()));
+
+            Bitmap result = makeGray(bitmap);
+
+            imageView.setImageBitmap(result);
+
+        }
+
         notifyMediaStoreScanner(f);
         //Uri contentUri = Uri.fromFile(f);
         //mediaScanIntent.setData(contentUri);
