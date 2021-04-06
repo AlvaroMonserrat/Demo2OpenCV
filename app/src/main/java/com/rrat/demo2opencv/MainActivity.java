@@ -25,6 +25,7 @@ import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -156,9 +157,20 @@ public class MainActivity extends AppCompatActivity {
     private void galleryAddPic() {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         File f = new File(currentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        this.sendBroadcast(mediaScanIntent);
+        notifyMediaStoreScanner(f);
+        //Uri contentUri = Uri.fromFile(f);
+        //mediaScanIntent.setData(contentUri);
+        //this.sendBroadcast(mediaScanIntent);
     }
 
+    public final void notifyMediaStoreScanner(final File file) {
+        try {
+            MediaStore.Images.Media.insertImage(this.getContentResolver(),
+                    file.getAbsolutePath(), file.getName(), null);
+            this.sendBroadcast(new Intent(
+                    Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 }
